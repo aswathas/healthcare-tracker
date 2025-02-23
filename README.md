@@ -1,36 +1,129 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Healthcare Tracker
+
+A comprehensive healthcare management application built with Next.js, Supabase, and modern web technologies.
+
+## Features
+
+### 1. Dashboard
+
+- Health summary with active conditions and medications
+- Recent test results visualization
+- Upcoming appointments
+- Health missions and goals tracking
+- Real-time health status monitoring
+
+### 2. Medical Profile
+
+- Comprehensive medical history
+- Conditions and medications tracking
+- Pregnancy status monitoring
+- Cardiac, pulmonary, and renal condition tracking
+- Diabetes management
+- Malignancy tracking
+
+### 3. Test Results
+
+- CBC (Complete Blood Count) results tracking
+- Historical test data visualization
+- Trend analysis
+- Abnormal results highlighting
+
+### 4. Doctor Visits
+
+- Appointment scheduling
+- Visit history
+- Document uploads (prescriptions, reports)
+- Follow-up reminders
+
+### 5. AI Doctor Assistant
+
+- Health query responses
+- Symptom analysis
+- General health advice
+- Medical term explanations
+
+### 6. Settings
+
+- Profile management
+- Notification preferences
+- Connected services (Google Fit, Apple Health)
+- Data sharing preferences
+
+## Tech Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **UI Components**: Tailwind CSS, Framer Motion
+- **Data Visualization**: Chart.js, Recharts
+- **Backend**: Supabase (PostgreSQL)
+- **AI Integration**: Google Gemini API
+- **Authentication**: Supabase Auth
+
+## Project Structure
+
+```
+healthcare-tracker/
+├── app/                    # Next.js app directory
+│   ├── ai-doctor/         # AI doctor assistant
+│   ├── auth/              # Authentication pages
+│   ├── dashboard/         # Main dashboard
+│   ├── doctor-visits/     # Visit management
+│   ├── medical-profile/   # Medical history
+│   ├── reports/          # Test results & reports
+│   └── settings/         # User settings
+├── components/            # Reusable components
+├── contexts/             # React contexts
+├── lib/                  # Utility functions
+└── types/               # TypeScript definitions
+```
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/healthcare-tracker.git
+cd healthcare-tracker
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Set up environment variables:
+
+```bash
+cp .env.example .env.local
+# Update .env.local with your Supabase and other API keys
+```
+
+4. Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Database Schema
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The application uses the following main tables in Supabase:
 
-## Learn More
+- **profiles**: User profiles and basic information
+- **medical_profiles**: Detailed medical history
+- **cbc_results**: Blood test results
+- **doctor_visits**: Appointment records
+- **health_missions**: Health goals and tracking
 
-To learn more about Next.js, take a look at the following resources:
+## Contributing
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a new Pull Request
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License - see the LICENSE file for details.
