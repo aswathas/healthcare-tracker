@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from '@/lib/supabase';
 import type { MedicalProfile } from "@/types/medical-profile";
 import GeneralMedicalForm from "@/components/medical-profile/GeneralMedicalForm";
 import { toast } from "react-hot-toast";

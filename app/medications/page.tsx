@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Card, Button, notification } from 'antd';
 import { PlusOutlined, CheckOutlined, BellOutlined } from '@ant-design/icons';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/hooks/useAuth';
 
 interface Medication {
