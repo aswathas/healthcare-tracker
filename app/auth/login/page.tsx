@@ -1,18 +1,19 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { showToast } from '@/lib/toast';
-import { supabase } from '@/lib/supabase';
-import Link from 'next/link';
-import { Icons } from '@/components/ui/icons';
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { showToast } from "@/lib/toast";
+import { supabase } from "@/lib/supabase";
+import Link from "next/link";
+import { Icons } from "@/components/ui/icons";
+import { Suspense } from "react";
 
-export default function Login() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,13 +28,13 @@ export default function Login() {
 
       if (error) throw error;
 
-      showToast.success('Signed in successfully');
-      const redirectTo = searchParams.get('redirect') || '/dashboard';
+      showToast.success("Signed in successfully");
+      const redirectTo = searchParams.get("redirect") || "/dashboard";
       router.push(redirectTo);
       router.refresh();
     } catch (error) {
-      console.error('Login error:', error);
-      showToast.error('Invalid email or password');
+      console.error("Login error:", error);
+      showToast.error("Invalid email or password");
     } finally {
       setLoading(false);
     }
@@ -46,22 +47,22 @@ export default function Login() {
 
     try {
       const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+        provider: "google",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
           queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
+            access_type: "offline",
+            prompt: "consent",
           },
         },
       });
 
       if (error) throw error;
-      showToast.success('Signed in successfully');
-      router.push('/dashboard');
+      showToast.success("Signed in successfully");
+      router.push("/dashboard");
     } catch (error) {
-      console.error('Google login error:', error);
-      showToast.error('Error signing in with Google');
+      console.error("Google login error:", error);
+      showToast.error("Error signing in with Google");
       setLoading(false);
     }
   };
@@ -70,7 +71,9 @@ export default function Login() {
     <div className="container flex h-screen w-screen flex-col items-center justify-center">
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
         <div className="flex flex-col space-y-2 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Welcome back
+          </h1>
           <p className="text-sm text-muted-foreground">
             Enter your email to sign in to your account
           </p>
@@ -161,5 +164,12 @@ export default function Login() {
         </p>
       </div>
     </div>
+  );
+}
+export default function Login() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }
