@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { showToast } from '@/lib/toast';
-import { supabase } from '@/lib/supabase';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import Link from 'next/link';
 import { Icons } from '@/components/ui/icons';
 
@@ -13,6 +13,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const supabase = createClientComponentClient();
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
