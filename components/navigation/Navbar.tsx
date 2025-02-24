@@ -47,7 +47,7 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 h-screen w-64 bg-white border-r border-gray-200 p-4">
       <div className="flex items-center gap-2 mb-8">
         <Activity className="h-8 w-8 text-blue-600" />
-        <span className="text-xl font-bold">HealthQuest</span>
+        <span className="text-xl font-bold">Lovely</span>
       </div>
       
       <div className="space-y-2">
