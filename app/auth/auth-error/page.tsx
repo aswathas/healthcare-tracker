@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { motion } from 'framer-motion'
+import Link from "next/link";
+import { motion } from "framer-motion";
 
 export default function AuthError() {
   return (
@@ -24,11 +24,14 @@ export default function AuthError() {
             <div className="flex">
               <div className="ml-3">
                 <p className="text-sm text-yellow-700">
-                  The link you clicked might be expired or invalid. Please try to:
+                  The link you clicked might be expired or invalid. Please try
+                  to:
                 </p>
                 <ul className="mt-2 list-disc list-inside text-sm text-yellow-700">
                   <li>Check if you copied the entire link from your email</li>
-                  <li>Request a new verification email if the link is expired</li>
+                  <li>
+                    Request a new verification email if the link is expired
+                  </li>
                   <li>Contact support if you continue having issues</li>
                 </ul>
               </div>
@@ -45,5 +48,5 @@ export default function AuthError() {
         </div>
       </motion.div>
     </div>
-  )
+  );
 }
