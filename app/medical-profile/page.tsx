@@ -113,7 +113,8 @@ export default function MedicalProfilePage() {
 
       // Update CBC values if they exist
       if (profile.cbc_values) {
-        const cbcData: Partial<CBCValues> = {
+        const cbcData = {
+          id: profile.cbc_values.id, // Include the ID if it exists
           user_id: session.user.id,
           rbc: profile.cbc_values.rbc,
           haemoglobin: profile.cbc_values.haemoglobin,
@@ -128,19 +129,31 @@ export default function MedicalProfilePage() {
           eosinophils: profile.cbc_values.eosinophils,
           basophils: profile.cbc_values.basophils,
           immature_granulocytes: profile.cbc_values.immature_granulocytes,
-          assessment_date: new Date().toISOString(),
+          assessment_date: profile.cbc_values.assessment_date || new Date().toISOString(),
+          created_at: profile.cbc_values.created_at || new Date().toISOString(),
           updated_at: new Date().toISOString()
         };
 
-        if (!profile.cbc_values.id) {
-          cbcData.created_at = new Date().toISOString();
+        // First, try to update if ID exists
+        if (cbcData.id) {
+          const { error: updateError } = await supabase
+            .from('cbc_values')
+            .update(cbcData)
+            .eq('id', cbcData.id);
+
+          if (updateError) {
+            throw updateError;
+          }
+        } else {
+          // If no ID, insert new record
+          const { error: insertError } = await supabase
+            .from('cbc_values')
+            .insert([cbcData]);
+
+          if (insertError) {
+            throw insertError;
+          }
         }
-
-        const { error: cbcError } = await supabase
-          .from('cbc_values')
-          .upsert(cbcData);
-
-        if (cbcError) throw cbcError;
       }
 
       showToast('Medical profile updated successfully', 'success');
