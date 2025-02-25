@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useToast } from '@/hooks/useToast';
-import { supabase } from '@/lib/supabase';
-import Link from 'next/link';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/useToast";
+import { supabase } from "@/lib/supabase";
+import Link from "next/link";
 
 export default function Register() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { showToast } = useToast();
@@ -31,11 +31,14 @@ export default function Register() {
 
       if (signUpError) throw signUpError;
 
-      showToast('Registration successful! Please check your email for verification.', 'success');
-      router.push('/auth/verify-email');
+      showToast(
+        "Registration successful! Please check your email for verification.",
+        "success"
+      );
+      router.push("/auth/verify-email");
     } catch (error: any) {
-      showToast(error.message || 'Error during registration', 'error');
-      console.error('Error:', error);
+      showToast(error.message || "Error during registration", "error");
+      console.error("Error:", error);
     } finally {
       setLoading(false);
     }
@@ -47,7 +50,7 @@ export default function Register() {
 
     try {
       const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+        provider: "google",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
         },
@@ -55,11 +58,11 @@ export default function Register() {
 
       if (error) throw error;
     } catch (error) {
-      console.error('Google registration error:', error);
+      console.error("Google registration error:", error);
       if (error instanceof Error) {
-        showToast(error.message || 'Failed to register with Google', 'error');
+        showToast(error.message || "Failed to register with Google", "error");
       } else {
-        showToast('An unexpected error occurred', 'error');
+        showToast("An unexpected error occurred", "error");
       }
       setLoading(false);
     }
@@ -73,7 +76,7 @@ export default function Register() {
             Create your account
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
+            Or{" "}
             <Link
               href="/auth/login"
               className="font-medium text-primary-600 hover:text-primary-500"
@@ -140,7 +143,7 @@ export default function Register() {
               disabled={loading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Creating account...' : 'Create account'}
+              {loading ? "Creating account..." : "Create account"}
             </button>
           </div>
 

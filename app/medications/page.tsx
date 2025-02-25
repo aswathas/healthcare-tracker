@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Card, Button, notification } from 'antd';
-import { PlusOutlined, CheckOutlined, BellOutlined } from '@ant-design/icons';
-import { supabase } from '@/lib/supabaseClient';
-import { useAuth } from '@/hooks/useAuth';
+import { useState, useEffect } from "react";
+import { Card, Button, notification } from "antd";
+import { PlusOutlined, CheckOutlined, BellOutlined } from "@ant-design/icons";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Medication {
   id: string;
@@ -32,9 +32,9 @@ export default function MedicationsPage() {
   }, []);
 
   const checkNotificationPermission = async () => {
-    if ('Notification' in window) {
+    if ("Notification" in window) {
       const permission = await Notification.requestPermission();
-      setNotificationPermission(permission === 'granted');
+      setNotificationPermission(permission === "granted");
     }
   };
 
@@ -42,16 +42,16 @@ export default function MedicationsPage() {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('medications')
-        .select('*')
-        .eq('user_id', user?.id)
-        .order('created_at', { ascending: false });
+        .from("medications")
+        .select("*")
+        .eq("user_id", user?.id)
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
       setMedications(data || []);
     } catch (error) {
       notification.error({
-        message: 'Error loading medications',
+        message: "Error loading medications",
         description: error.message,
       });
     } finally {
@@ -62,17 +62,19 @@ export default function MedicationsPage() {
   const setupReminders = () => {
     return setInterval(() => {
       const now = new Date();
-      medications.forEach(med => {
-        const [hours, minutes] = med.time.split(':');
+      medications.forEach((med) => {
+        const [hours, minutes] = med.time.split(":");
         const reminderTime = new Date();
         reminderTime.setHours(parseInt(hours), parseInt(minutes), 0);
-        
-        if (now.getHours() === reminderTime.getHours() && 
-            now.getMinutes() === reminderTime.getMinutes() &&
-            notificationPermission) {
+
+        if (
+          now.getHours() === reminderTime.getHours() &&
+          now.getMinutes() === reminderTime.getMinutes() &&
+          notificationPermission
+        ) {
           new Notification(`Time for ${med.name}`, {
             body: `Dosage: ${med.dosage} | Frequency: ${med.frequency}`,
-            icon: '/medicine-icon.png'
+            icon: "/medicine-icon.png",
           });
         }
       });
@@ -83,39 +85,43 @@ export default function MedicationsPage() {
     try {
       const now = new Date().toISOString();
       const { error } = await supabase
-        .from('medications')
+        .from("medications")
         .update({ lastTaken: now })
-        .eq('id', id);
+        .eq("id", id);
 
       if (error) throw error;
-      
-      setMedications(medications.map(med => 
-        med.id === id ? { ...med, lastTaken: now } : med
-      ));
+
+      setMedications(
+        medications.map((med) =>
+          med.id === id ? { ...med, lastTaken: now } : med
+        )
+      );
 
       notification.success({
-        message: 'Medication marked as taken'
+        message: "Medication marked as taken",
       });
     } catch (error) {
       notification.error({
-        message: 'Error updating medication status',
-        description: error.message
+        message: "Error updating medication status",
+        description: error.message,
       });
     }
   };
 
   const calculateAdherence = (med: Medication) => {
     if (!med.startDate) return 0;
-    
+
     const start = new Date(med.startDate);
     const end = med.endDate ? new Date(med.endDate) : new Date();
-    const totalDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 3600 * 24));
-    
+    const totalDays = Math.ceil(
+      (end.getTime() - start.getTime()) / (1000 * 3600 * 24)
+    );
+
     if (totalDays <= 0) return 0;
-    
+
     const lastTaken = med.lastTaken ? new Date(med.lastTaken) : null;
     const daysTaken = lastTaken ? 1 : 0; // Simplified for demonstration
-    
+
     return ((daysTaken / totalDays) * 100).toFixed(1);
   };
 
@@ -126,7 +132,7 @@ export default function MedicationsPage() {
           <h1 className="text-2xl font-bold">Medication Management</h1>
           <p className="text-gray-600">Track and manage your medications</p>
         </div>
-        <Button 
+        <Button
           type="primary"
           icon={<PlusOutlined />}
           size="large"
@@ -148,7 +154,7 @@ export default function MedicationsPage() {
       )}
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {medications.map(med => (
+        {medications.map((med) => (
           <Card
             key={med.id}
             title={med.name}
@@ -165,15 +171,24 @@ export default function MedicationsPage() {
             }
           >
             <div className="space-y-3">
-              <p><span className="font-semibold">Dosage:</span> {med.dosage}</p>
-              <p><span className="font-semibold">Schedule:</span> {med.frequency} at {med.time}</p>
+              <p>
+                <span className="font-semibold">Dosage:</span> {med.dosage}
+              </p>
+              <p>
+                <span className="font-semibold">Schedule:</span> {med.frequency}{" "}
+                at {med.time}
+              </p>
               <p>
                 <span className="font-semibold">Adherence:</span>
-                <span className={`ml-2 ${
-                  parseFloat(calculateAdherence(med)) >= 80 ? 'text-green-600' :
-                  parseFloat(calculateAdherence(med)) >= 50 ? 'text-yellow-600' :
-                  'text-red-600'
-                }`}>
+                <span
+                  className={`ml-2 ${
+                    parseFloat(calculateAdherence(med)) >= 80
+                      ? "text-green-600"
+                      : parseFloat(calculateAdherence(med)) >= 50
+                      ? "text-yellow-600"
+                      : "text-red-600"
+                  }`}
+                >
                   {calculateAdherence(med)}%
                 </span>
               </p>
