@@ -45,12 +45,16 @@ both inside a Route Handler.
 from `NEXT_PUBLIC_GEMINI_API_KEY`, which Next.js inlined into the client
 bundle. That is the AI Doctor (`app/ai-doctor`) path. The exposed key has now
 been removed — the module reads server-only `GEMINI_API_KEY` and throws when
-that is absent, so the client-side key is no longer shipped. **The AI Doctor
-page still calls the module directly from a `'use client'` page and is
-therefore broken until it is moved behind a server route**; that refactor is
-outstanding. The three-variable split across two naming schemes remains untidy.
+that is absent, so the client-side key is no longer shipped.
 
-Models are `gemini-pro` for text and `gemini-pro-vision` for uploaded reports.
+AI Doctor is a `'use client'` page, so it cannot import that module at all. It now
+posts to `app/api/ai-doctor/route.ts`, a Route Handler that imports the module
+server-side. This was the outstanding refactor in the previous revision of this
+file. The three-variable split across two naming schemes remains untidy.
+
+Models were `gemini-pro` and `gemini-pro-vision`, both of which Google has
+retired — a request naming them 404s, which reads as a bad API key and sends you
+rotating a working one. Both now use `gemini-1.5-flash`.
 `openai` is in `dependencies` but has no call site anywhere in the repo — it is
 dead weight.
 

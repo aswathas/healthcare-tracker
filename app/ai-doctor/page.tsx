@@ -4,7 +4,19 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChatBubbleLeftRightIcon, PaperClipIcon, ArrowUpIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '@/contexts/AuthContext';
-import { generateHealthAdvice, analyzeMedicalDocument } from '@/lib/gemini';
+// Calls the server route, not lib/gemini directly. This page is a client
+// component, so importing the Gemini module here would put the API key in the
+// browser bundle. The route keeps GEMINI_API_KEY server-side.
+async function callAIDoctor(body: Record<string, unknown>): Promise<string> {
+  const res = await fetch('/api/ai-doctor', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'The assistant is unavailable');
+  return data.text;
+}
 import { useToast } from '@/hooks/useToast';
 import { useRouter } from 'next/navigation';
 
@@ -46,7 +58,7 @@ export default function AIDoctorPage() {
     setIsLoading(true);
 
     try {
-      const response = await generateHealthAdvice(userMessage);
+      const response = await callAIDoctor({ action: 'advice', prompt: userMessage });
       setMessages(prev => [...prev, { role: 'assistant', content: response }]);
     } catch (error) {
       toast({
@@ -68,7 +80,7 @@ export default function AIDoctorPage() {
       const text = event.target?.result as string;
       setIsLoading(true);
       try {
-        const analysis = await analyzeMedicalDocument(text);
+        const analysis = await callAIDoctor({ action: 'analyze', documentText: text });
         setMessages(prev => [...prev, 
           { role: 'user', content: `Uploaded document: ${file.name}` },
           { role: 'assistant', content: analysis }

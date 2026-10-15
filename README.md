@@ -105,11 +105,12 @@ and are not documented.
 ## Security notes
 
 - The browser-exposed `NEXT_PUBLIC_GEMINI_API_KEY` is gone. `lib/gemini.ts`
-  now reads server-only `GEMINI_API_KEY` and throws if it is missing on the
-  server. **AI Doctor (`app/ai-doctor`) still calls it directly from a
-  `'use client'` page, so it is broken until that page is moved behind a
-  server route** the way `app/api/ai-missions/route.ts` already does. That
-  refactor is still outstanding.
+  now reads server-only `GEMINI_API_KEY` and throws if it is missing.
+  AI Doctor (`app/ai-doctor`) is a `'use client'` page and no longer imports
+  that module — it posts to `app/api/ai-doctor/route.ts`, which calls Gemini
+  server-side, so the key cannot reach the browser bundle. The route validates
+  the action and input length, and returns 503 with an explicit message when
+  the key is unconfigured.
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` is intentionally public — Supabase anon
   keys are designed to ship to the browser and RLS is the access control.
 - `middleware.ts` sets HSTS, `X-Frame-Options`, `nosniff`, `XSS-Protection` and

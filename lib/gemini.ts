@@ -1,5 +1,9 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
+// `gemini-pro` was retired by Google. Naming it produces a 404 at request time,
+// which reads as "the API key is wrong" and sends you rotating a good key.
+const MODEL = 'gemini-1.5-flash';
+
 // Built lazily so importing this module from a client component fails loudly
 // instead of silently shipping an empty-key client into the browser bundle.
 function getModel() {
@@ -11,7 +15,7 @@ function getModel() {
         'would expose the key in the browser bundle. See lib/gemini.ts.'
     );
   }
-  return new GoogleGenerativeAI(apiKey).getGenerativeModel({ model: "gemini-pro" });
+  return new GoogleGenerativeAI(apiKey).getGenerativeModel({ model: MODEL });
 }
 
 export async function generateHealthAdvice(

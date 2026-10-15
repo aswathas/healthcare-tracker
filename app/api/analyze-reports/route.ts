@@ -42,7 +42,7 @@ export async function POST(request: Request) {
 
     // Initialize the model with safety settings
     const model = genAI.getGenerativeModel({
-      model: 'gemini-pro-vision',
+      model: 'gemini-1.5-flash',
       safetySettings: [
         {
           category: HarmCategory.HARM_CATEGORY_HARASSMENT,

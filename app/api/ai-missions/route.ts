@@ -6,7 +6,7 @@ export async function POST(request: Request) {
   
   try {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
     const prompt = `Generate 3-5 personalized health missions based on:
     Medical Conditions: ${JSON.stringify(conditions)}
