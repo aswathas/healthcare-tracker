@@ -84,7 +84,7 @@ variables the code actually reads:
 | `SUPABASE_SERVICE_KEY` | `app/api/analyze-reports/route.ts`, `scripts/migrate.js` | Service-role key — server side only |
 | `GEMINI_AI_API_KEY` | `app/api/analyze-reports/route.ts` | Report analysis |
 | `GEMINI_API_KEY` | `app/api/ai-missions/route.ts` | Health-mission generation |
-| `NEXT_PUBLIC_GEMINI_API_KEY` | `lib/gemini.ts` | AI Doctor. **Exposed to the browser** — see Security below |
+| `GEMINI_API_KEY` | `lib/gemini.ts` | AI Doctor. Server-only — throws on the client, see Security below |
 
 `scripts/migrate.js` loads `.env.local` and then `.env` via `dotenv`, then exits
 if the URL or service key are missing.
@@ -104,10 +104,14 @@ and are not documented.
 
 ## Security notes
 
-- `lib/gemini.ts` sends the AI Doctor key to the client via
-  `NEXT_PUBLIC_GEMINI_API_KEY`. For a deployed app, move AI Doctor behind a
-  server route the way `app/api/ai-missions/route.ts` already does, and remove
-  the exposed key.
+- The browser-exposed `NEXT_PUBLIC_GEMINI_API_KEY` is gone. `lib/gemini.ts`
+  now reads server-only `GEMINI_API_KEY` and throws if it is missing on the
+  server. **AI Doctor (`app/ai-doctor`) still calls it directly from a
+  `'use client'` page, so it is broken until that page is moved behind a
+  server route** the way `app/api/ai-missions/route.ts` already does. That
+  refactor is still outstanding.
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` is intentionally public — Supabase anon
+  keys are designed to ship to the browser and RLS is the access control.
 - `middleware.ts` sets HSTS, `X-Frame-Options`, `nosniff`, `XSS-Protection` and
   `Referrer-Policy`, plus a CSP that differs between development and production.
 - `next.config.js` sets `typescript.ignoreBuildErrors` and

@@ -1,10 +1,18 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-// Initialize the Gemini API with your API key
-const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY || '');
-
-// Get the model
-const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+// Built lazily so importing this module from a client component fails loudly
+// instead of silently shipping an empty-key client into the browser bundle.
+function getModel() {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error(
+      'GEMINI_API_KEY is not set on the server. Gemini must be called from a ' +
+        'server route or server component — calling it from a client component ' +
+        'would expose the key in the browser bundle. See lib/gemini.ts.'
+    );
+  }
+  return new GoogleGenerativeAI(apiKey).getGenerativeModel({ model: "gemini-pro" });
+}
 
 export async function generateHealthAdvice(
   prompt: string,
@@ -30,7 +38,7 @@ export async function generateHealthAdvice(
     fullPrompt += `Please provide a clear, concise response that is easy to understand. Include any relevant health tips or precautions.`;
 
     // Generate content
-    const result = await model.generateContent(fullPrompt);
+    const result = await getModel().generateContent(fullPrompt);
     const response = await result.response;
     return response.text();
   } catch (error) {
@@ -43,7 +51,7 @@ export async function analyzeMedicalDocument(documentText: string) {
   try {
     const prompt = `Please analyze the following medical document and provide a clear summary. Focus on key findings, diagnoses, and recommendations:\n\n${documentText}\n\nPlease structure the response with these sections:\n1. Key Findings\n2. Diagnosis\n3. Recommendations\n4. Important Notes`;
 
-    const result = await model.generateContent(prompt);
+    const result = await getModel().generateContent(prompt);
     const response = await result.response;
     return response.text();
   } catch (error) {

@@ -41,12 +41,14 @@ Server routes keep the key private: `app/api/analyze-reports/route.ts` reads
 `GEMINI_AI_API_KEY` and `app/api/ai-missions/route.ts` reads `GEMINI_API_KEY`,
 both inside a Route Handler.
 
-`lib/gemini.ts` does not. It initialises `GoogleGenerativeAI` at module scope
-from `NEXT_PUBLIC_GEMINI_API_KEY`, which Next.js inlines into the client
-bundle. That is the AI Doctor (`app/ai-doctor`) path. The three-variable split
-across two naming schemes is untidy, and the client-side key is a live
-credential in shipped JavaScript. The existing server route is the pattern to
-follow to close it.
+`lib/gemini.ts` does not. It initialised `GoogleGenerativeAI` at module scope
+from `NEXT_PUBLIC_GEMINI_API_KEY`, which Next.js inlined into the client
+bundle. That is the AI Doctor (`app/ai-doctor`) path. The exposed key has now
+been removed — the module reads server-only `GEMINI_API_KEY` and throws when
+that is absent, so the client-side key is no longer shipped. **The AI Doctor
+page still calls the module directly from a `'use client'` page and is
+therefore broken until it is moved behind a server route**; that refactor is
+outstanding. The three-variable split across two naming schemes remains untidy.
 
 Models are `gemini-pro` for text and `gemini-pro-vision` for uploaded reports.
 `openai` is in `dependencies` but has no call site anywhere in the repo — it is
